@@ -10,7 +10,10 @@ function Form() {
   const [endDate, setEndDate] = useState(null);
 
   const schema = yup.object({
-    firstName: yup.string().required("First Name is a required field"),
+    firstName: yup
+      .string()
+      .matches(/^(?!\s*$).+/, "First Name cannot be empty or just spaces")
+      .required("First Name is a required field"),
     lastName: yup.string().required("Last Name is a required field"),
     password: yup
       .string()
@@ -63,6 +66,15 @@ function Form() {
             id="firstName"
             placeholder="Enter your first name"
             {...register("firstName")}
+            onInput={(e) => {
+              // Prevent spaces in input
+
+              // e.target.value = e.target.value.replace(/\s/g, '');//first Approach
+              // important - second Approach
+              if (e.target.value.startsWith(" ")) {
+                e.target.value = e.target.value.trimStart();
+              }
+            }}
             className="w-full border border-gray-300 rounded p-2 mb-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
           {errors.firstName && (
